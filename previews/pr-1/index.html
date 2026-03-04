@@ -8,6 +8,50 @@
 <style>
   body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   #map { height: 100vh; }
+  
+  /* Shared control styling */
+  .legend, .layer-control {
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    font-size: 14px;
+    min-width: 220px;
+    max-width: 220px;
+  }
+  
+  .layer-control {
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+  
+  .layer-control strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  
+  .layer-control label {
+    display: block;
+    margin: 3px 0;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  
+  .layer-control input[type="radio"] {
+    margin-right: 6px;
+    cursor: pointer;
+  }
+  
+  .layer-control hr {
+    margin: 10px 0;
+    border: 0;
+    border-top: 1px solid #ddd;
+  }
+  
+  .legend {
+    line-height: 24px;
+  }
   .legend {
     background: white;
     padding: 10px;
@@ -274,8 +318,11 @@ function addFeatureToMap(feature, color, type, oldProps, layerGroup) {
   allLayers.push(layer)
 }
 
+// Sort files alphabetically by filename
+const sortedFileDiffs = [...fileDiffs].sort((a, b) => a.filename.localeCompare(b.filename))
+
 // Process each file and create layer groups
-fileDiffs.forEach(({filename, diff}) => {
+sortedFileDiffs.forEach(({filename, diff}, index) => {
   const layerGroup = L.layerGroup()
   fileLayerGroups[filename] = layerGroup
   
@@ -285,26 +332,88 @@ fileDiffs.forEach(({filename, diff}) => {
   diff.added.forEach(f => addFeatureToMap(f, '#00ff3c', 'added', null, layerGroup))
   diff.deleted.forEach(f => addFeatureToMap(f, '#dc3545', 'deleted', null, layerGroup))
   
-  // Add layer group to map (visible by default)
-  layerGroup.addTo(map)
+  // Only add first file to map initially
+  if (index === 0) {
+    layerGroup.addTo(map)
+  }
 })
 
-// Create layer control with base maps and file overlays
+// Base map layers
 const baseMaps = {
-  "Satellite": satellite,
-  "Street Map": osmStandard,
-  "Topographic": topoMap,
-  "Terrain": terrain
+  satellite: { layer: satellite, label: 'Satellite' },
+  street: { layer: osmStandard, label: 'Street Map' },
+  topo: { layer: topoMap, label: 'Topographic' },
+  terrain: { layer: terrain, label: 'Terrain' }
 }
 
-if (fileDiffs.length > 1) {
-  const overlayMaps = {}
-  fileDiffs.forEach(({filename}) => {
-    overlayMaps[filename] = fileLayerGroups[filename]
+// Create custom layer control (positioned below legend)
+const layerControl = L.control({position: 'topright'})
+layerControl.onAdd = function(map) {
+  const div = L.DomUtil.create('div', 'layer-control')
+  
+  let html = '<strong>Base Maps</strong>'
+  
+  // Base map radio buttons
+  Object.keys(baseMaps).forEach((key, index) => {
+    const checked = key === 'satellite' ? 'checked' : ''
+    html += `<label><input type="radio" name="basemap" value="${key}" ${checked}> ${baseMaps[key].label}</label>`
   })
-  L.control.layers(baseMaps, overlayMaps).addTo(map)
-} else {
-  L.control.layers(baseMaps).addTo(map)
+  
+  // File layer radio buttons (only if multiple files)
+  if (sortedFileDiffs.length > 1) {
+    html += '<hr><strong>Files</strong>'
+    sortedFileDiffs.forEach(({filename}, index) => {
+      const checked = index === 0 ? 'checked' : ''
+      html += `<label><input type="radio" name="filelayer" value="${filename}" ${checked}> ${filename}</label>`
+    })
+  }
+  
+  div.innerHTML = html
+  
+  // Prevent map interactions when clicking control
+  L.DomEvent.disableClickPropagation(div)
+  L.DomEvent.disableScrollPropagation(div)
+  
+  return div
+}
+layerControl.addTo(map)
+
+// Add event listeners for base map switching
+let currentBaseMap = 'satellite'
+document.querySelectorAll('input[name="basemap"]').forEach(radio => {
+  radio.addEventListener('change', (e) => {
+    if (e.target.checked) {
+      // Remove current base map
+      baseMaps[currentBaseMap].layer.remove()
+      // Add new base map
+      currentBaseMap = e.target.value
+      baseMaps[currentBaseMap].layer.addTo(map)
+    }
+  })
+})
+
+// Add event listeners for file layer switching (only if multiple files)
+if (sortedFileDiffs.length > 1) {
+  let currentFile = sortedFileDiffs[0].filename
+  document.querySelectorAll('input[name="filelayer"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        // Remove current file layer
+        fileLayerGroups[currentFile].remove()
+        // Add new file layer
+        currentFile = e.target.value
+        fileLayerGroups[currentFile].addTo(map)
+        
+        // Re-fit bounds to visible layers only
+        const visibleLayers = []
+        fileLayerGroups[currentFile].eachLayer(layer => visibleLayers.push(layer))
+        if (visibleLayers.length > 0) {
+          const group = L.featureGroup(visibleLayers)
+          map.fitBounds(group.getBounds(), { padding: [50, 50] })
+        }
+      }
+    })
+  })
 }
 
 // Auto-zoom to fit all features
