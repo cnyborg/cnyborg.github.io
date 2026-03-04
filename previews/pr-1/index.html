@@ -263,7 +263,7 @@ function addFeatureToMap(feature, color, type, oldProps, layerGroup) {
   if (geom.type === 'Point') {
     layer = L.circleMarker([geom.coordinates[1], geom.coordinates[0]], pointStyle)
     layer.bindPopup(createPopupContent(feature, type, oldProps))
-    layer.bindTooltip(name, {permanent: true, direction: 'top', className: `feature-label label-${type}`})
+    layer.bindTooltip(name, {permanent: true, direction: 'top', opacity: 0.5, className: `feature-label label-${type}`})
     layer.addTo(layerGroup)
   } else {
     // For LineString, MultiLineString, Polygon, etc.
