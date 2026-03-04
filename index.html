@@ -1,31 +1,115 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="author" content="CNyborg AB">
-		<title>CNyborg AB</title>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap"> 
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,700;1,300;1,700&display=swap"> 
-		<link rel="stylesheet" href="dist/normalize.css">
-        <link rel="stylesheet" href="dist/milligram.min.css">
-        <link rel="stylesheet" href="styles/main.css">
-	</head>
-	<body>
-		<main class="wrapper">
-            <div class="container">
-                <div class="row">
-                    <header id="company-name">
-                        <h2>CNyborg AB</h2>
-                    </header>
-				</div>
-				<div class="row">
-                    <section id="company-desc">
-                        <p>Aktiebolaget ska agera holdingbolag, bedriva datateknisk konsultverksamhet, mjukvaruproduktion, handel med värdepapper samt därmed förenlig verksamhet.</p>
-                        <a href="mailto:info@cnyborg.se">Kontakt</a>
-                    </section>
-                </div>
-            </div>
-		</main>
-	</body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CNyborg AB</title>
+  <meta name="description" content="CNyborg AB — Holding company & IT consulting, Sweden." />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0e0e0e;
+      --fg: #f0ede8;
+      --muted: #6b6b6b;
+      --accent: #c8b89a;
+      --font: 'Georgia', 'Times New Roman', serif;
+      --mono: 'Courier New', monospace;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: clamp(2rem, 8vw, 6rem);
+    }
+
+    .wordmark {
+      font-size: clamp(2.8rem, 8vw, 6rem);
+      font-weight: normal;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--fg);
+    }
+
+    .wordmark span {
+      color: var(--accent);
+    }
+
+    .descriptor {
+      margin-top: 1.2rem;
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      color: var(--muted);
+      font-family: var(--mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .divider {
+      margin-top: 3rem;
+      width: 2rem;
+      height: 1px;
+      background-color: var(--muted);
+      opacity: 0.4;
+    }
+
+    .contact {
+      margin-top: 2rem;
+      font-family: var(--mono);
+      font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+      color: var(--muted);
+    }
+
+    .contact a {
+      color: var(--fg);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .contact a:hover {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .footer {
+      position: fixed;
+      bottom: clamp(1.5rem, 4vw, 2.5rem);
+      right: clamp(1.5rem, 4vw, 2.5rem);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      opacity: 0.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="wordmark"><span>C</span>Nyborg AB</h1>
+  <p class="descriptor">Holding company &amp; IT consulting</p>
+
+  <div class="divider"></div>
+
+  <p class="contact">
+    <a href="mailto:hello@cnyborg.se">hello@cnyborg.se</a>
+  </p>
+
+  <div class="footer">Sweden &middot; Reg. SE</div>
+
+</body>
 </html>
