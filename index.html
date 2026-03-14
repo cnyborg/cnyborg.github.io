@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CNyborg AB</title>
   <meta name="description" content="CNyborg AB — Holding company & IT consulting, Sweden." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -13,12 +16,12 @@
     }
 
     :root {
-      --bg: #0e0e0e;
-      --fg: #f0ede8;
-      --muted: #6b6b6b;
-      --accent: #c8b89a;
-      --font: 'Georgia', 'Times New Roman', serif;
-      --mono: 'Courier New', monospace;
+      --bg: #0f0e0d;
+      --fg: #f5f1ed;
+      --muted: #8b8680;
+      --accent: #d4af37;
+      --font: 'Crimson Text', Georgia, serif;
+      --mono: 'JetBrains Mono', monospace;
     }
 
     html, body {
@@ -39,7 +42,7 @@
 
     .wordmark {
       font-size: clamp(2.8rem, 8vw, 6rem);
-      font-weight: normal;
+      font-weight: 600;
       letter-spacing: -0.02em;
       line-height: 1;
       color: var(--fg);
@@ -62,8 +65,8 @@
       margin-top: 3rem;
       width: 2rem;
       height: 1px;
-      background-color: var(--muted);
-      opacity: 0.4;
+      background-color: var(--accent);
+      opacity: 0.5;
     }
 
     .contact {
